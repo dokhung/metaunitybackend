@@ -11,12 +11,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,26 +28,32 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
 
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
-//    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectUri;
-    @Value("${google.redirect.successfulUri}")
-    private String successfulUri;
+
+//    @Value("${google.redirect.successfulUri}")
+//    private String successfulUri;
+
     private static final String[] WHITE_LIST = {
             "/api/auth/**",
             "/v3/api-docs/**",       // Swagger 문서
             "/swagger-ui/**",        // Swagger UI
             "/swagger-ui.html",     // Swagger UI HTML
+            "login/oauth2/code/google"
 
     };
 
@@ -79,14 +89,22 @@ public class SecurityConfig {
         return http.build();
     }
     private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-//        final PrincipalOauthUserService delegate = new PrincipalOauthUserService(passwordEncoder(), userRegistService,userCommandRepository);
-//        return (userRequest) -> {
-//
-//            // Delegate to the default implementation for loading a user
-//            return (CustomUserDetail) delegate.loadUser(userRequest);
-//        };
+        return new OAuth2UserService<>(){
+            @Override
+            public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+                DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+                OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        return null;
+                Map<String, Object> attributes = oAuth2User.getAttributes();
+                String userNameAttributeName = userRequest.getClientRegistration()
+                        .getProviderDetails()
+                        .getUserInfoEndpoint()
+                        .getUserNameAttributeName();
+
+                OAuth2UserAuthority authority = new OAuth2UserAuthority(attributes);
+                return new DefaultOAuth2User(Collections.singleton(authority),attributes,userNameAttributeName);
+            }
+        };
     }
 
     @Bean

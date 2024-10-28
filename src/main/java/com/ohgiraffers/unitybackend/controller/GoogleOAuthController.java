@@ -35,7 +35,7 @@ public class GoogleOAuthController {
     @Value("http://accounts.google.com/o/oauth2/v2/auth")
     private String authorizationUri;
 
-    @Value("https://localhost:4040/api/auth/google/login")
+    @Value("http://localhost:4040/api/auth/google/login")
     private String googleRedirectUri;
 
     @Value("profile email")
@@ -58,7 +58,7 @@ public class GoogleOAuthController {
         System.out.println("response" + response);
     }
 
-    @GetMapping("google/test")
+    @GetMapping("/test")
     public ResponseEntity<String> testMapping() {
         return ResponseEntity.ok("서버가 정상적으로 동작하고 있습니다.");
     }
