@@ -36,5 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-# Environment files
+# Environment files .env 지워
 .env
