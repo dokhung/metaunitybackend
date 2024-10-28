@@ -25,6 +25,7 @@ import java.util.Map;
 @Tag(name = "구글 로그인 API", description = "구글 로그인 및 회원가입 기능을 제공하는 API")
 public class GoogleOAuthController {
 
+    // https://localhost:4040/
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
 
@@ -34,7 +35,7 @@ public class GoogleOAuthController {
     @Value("https://accounts.google.com/o/oauth2/v2/auth")
     private String authorizationUri;
 
-    @Value("http://localhost:4040/api/auth/google/login")
+    @Value("https://localhost:4040/api/auth/google/login")
     private String googleRedirectUri;
 
     @Value("profile email")

@@ -1,6 +1,13 @@
 server:
   port: 4040
   forward-headers-strategy: native
+  ssl:
+    enabled: true
+    key-store: file:/Users/kuredogyon/Documents/unitybackend/keystore.p12
+    key-store-password: root1234  # 키스토어 비밀번호 입력
+    key-store-type: PKCS12
+    key-alias: myssl  # 위에서 설정한 alias 이름
+
   servlet:
     session:
       cookie:
@@ -30,19 +37,14 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID} # Token
+            client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
-            #              - profile
-            #              - openid
-            redirect-uri: http://localhost:4040/login/oauth2/code/google
+            redirect-uri: https://localhost:4040/login/oauth2/code/google
             authorizationGrantType: authorization_code
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-
-
-
