@@ -2,7 +2,7 @@ server:
   port: 4040
   forward-headers-strategy: native
   ssl:
-    enabled: true
+    enabled: false
     key-store: file:/Users/kuredogyon/Documents/unitybackend/keystore.p12
     key-store-password: root1234  # 키스토어 비밀번호 입력
     key-store-type: PKCS12
@@ -41,7 +41,7 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
-            redirect-uri: https://localhost:4040/login/oauth2/code/google
+            redirect-uri: http://localhost:4040/login/oauth2/code/google
             authorizationGrantType: authorization_code
         provider:
           google:

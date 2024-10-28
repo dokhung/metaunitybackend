@@ -32,7 +32,7 @@ public class GoogleOAuthController {
     @Value("${GOOGLE_CLIENT_SECRET}")
     private String clientSecret;
 
-    @Value("https://accounts.google.com/o/oauth2/v2/auth")
+    @Value("http://accounts.google.com/o/oauth2/v2/auth")
     private String authorizationUri;
 
     @Value("https://localhost:4040/api/auth/google/login")
