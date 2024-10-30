@@ -1,4 +1,5 @@
-package com.ohgiraffers.config;
+package com.ohgiraffers.unitybackend.config;
+
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -11,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 public class SwaggerConfig {
 
-//http://localhost:4040/swagger-ui/index.html
+//https://localhost:4040/swagger-ui/index.html
 
     @Bean
     public OpenAPI openAPI() {
@@ -24,7 +25,7 @@ public class SwaggerConfig {
 
         //models info로 import
         return new Info()
-                .title("Rest API Spec")
+                .title("API Spec")
                 .description("Specification")
                 .version("1.0");
     }

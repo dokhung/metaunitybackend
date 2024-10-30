@@ -1,8 +1,11 @@
+
+
+# 기존 설정
 server:
   port: 4040
   forward-headers-strategy: native
   ssl:
-    enabled: false
+    enabled: true
     key-store: file:/Users/kuredogyon/Documents/unitybackend/keystore.p12
     key-store-password: root1234  # 키스토어 비밀번호 입력
     key-store-type: PKCS12
@@ -21,6 +24,7 @@ spring:
     url: ${MYSQL_URL}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+
   jpa:
     show-sql: true
     database: mysql
@@ -32,19 +36,22 @@ spring:
         show_sql: true
         highlight_sql: true
         use_sql_comments: true
+
   security:
     oauth2:
       client:
         registration:
           google:
+            redirect-uri: https://localhost:4040/login/oauth2/code/google
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
-            redirect-uri: http://localhost:4040/login/oauth2/code/google
             authorizationGrantType: authorization_code
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+#jwt:
+#  secret: ${JWT_SECRET_KEY}
