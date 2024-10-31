@@ -1,6 +1,5 @@
 package com.ohgiraffers.unitybackend.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -13,29 +12,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "tbl_user")
 public class User {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
-    @JsonProperty("USER_ID")
-    @NotNull
     private Long id;
 
     @NotNull
-    @JsonProperty("USER_NAME")
     @Column(name = "USER_NAME")
     private String userName;
 
     @NotNull
-    @JsonProperty("USER_EMAIL")
-    @Column(name = "USER_EMAIL")
+    @Column(name = "USER_EMAIL", unique = true) // 이메일을 고유하게 설정하여 중복 방지
     private String userEmail;
 
-    @Enumerated(EnumType.STRING) // Enum 타입은 문자열 형태로 저장해야 함
     @NotNull
-    @JsonProperty("USER_ROLE")
+    @Enumerated(EnumType.STRING)
     @Column(name = "USER_ROLE")
-    private com.ohgiraffers.unitybackend.config.Role role;
+    private Role role;
 
     @Builder
     public User(Long id, String userName, String userEmail, Role role) {
@@ -45,12 +38,21 @@ public class User {
         this.role = role;
     }
 
-    public User update(String UserName){
-        this.userName = UserName;
+    // 편의 생성자
+    public User(String userName, String userEmail, Role role) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.role = role;
+    }
+
+    // 이름 업데이트 메서드
+    public User update(String userName) {
+        this.userName = userName;
         return this;
     }
 
-    public String getRoleKey(){
+    // 역할 키 반환 메서드
+    public String getRoleKey() {
         return this.role.getKey();
     }
 }

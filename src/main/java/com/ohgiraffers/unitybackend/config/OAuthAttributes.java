@@ -12,6 +12,7 @@ public class OAuthAttributes {
     private String name;
     private String email;
 
+
     @Builder
     public OAuthAttributes(Map<String, Object> attributes,
                            String nameAttributeKey, String name,
@@ -20,6 +21,7 @@ public class OAuthAttributes {
         this.nameAttributeKey = nameAttributeKey;
         this.name = name;
         this.email = email;
+
     }
 
     // OAuth2User에서 반환하는 사용자 정보는 Map
@@ -32,21 +34,25 @@ public class OAuthAttributes {
     }
 
     // 구글 생성자
-    private static OAuthAttributes ofGoogle(String usernameAttributeName,
-                                            Map<String, Object> attributes) {
+    private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+        System.out.println("Attributes: " + attributes); // 키 확인
+
         return OAuthAttributes.builder()
-                .name((String) attributes.get("name"))
+                .name((String) attributes.get("name")) // 여기서 키를 맞게 설정
                 .email((String) attributes.get("email"))
                 .attributes(attributes)
-                .nameAttributeKey(usernameAttributeName)
+                .nameAttributeKey(userNameAttributeName)
                 .build();
     }
 
+
     public User toEntity() {
+        System.out.println("빌더 되었습니다.");
         return User.builder()
                 .userName(name)
                 .userEmail(email)
                 .role(Role.USER)
                 .build();
     }
+
 }

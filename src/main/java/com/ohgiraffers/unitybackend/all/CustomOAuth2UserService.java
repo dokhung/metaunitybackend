@@ -17,8 +17,8 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User>{
-    private final UserRepository userRepository;
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+    private final UserRepository userRepository; // 올바르게 주입된 UserRepository 인스턴스
     private final HttpSession httpSession;
 
     @Override
@@ -26,10 +26,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-
-
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
@@ -51,12 +48,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User saveOrUpdate(OAuthAttributes attributes) {
+        // 여기서 userRepository를 사용해야 합니다
         User user = userRepository.findByUserEmail(attributes.getEmail())
-                // 구글 사용자 정보 업데이트(이미 가입된 사용자) => 업데이트
-                .map(entity -> entity.update(attributes.getName()))
-                // 가입되지 않은 사용자 => User 엔티티 생성
-                .orElse(attributes.toEntity());
+                .map(entity -> entity.update(attributes.getName())) // 기존 사용자 정보 업데이트
+                .orElse(attributes.toEntity()); // 새 사용자인 경우 엔티티 생성
 
-        return userRepository.save(user);
+        System.out.println("Logged in user info:");
+        System.out.println("Name: " + user.getUserName());
+        System.out.println("Email: " + user.getUserEmail());
+        System.out.println("Role: " + user.getRole());
+
+        return userRepository.save(user); // 사용자 정보 저장
     }
 }
+
